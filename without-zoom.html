@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/svg-pan-zoom@3.6.1/dist/svg-pan-zoom.min.js"></script>
+    <style>
+        .diagram-container {
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 10px;
+            position: relative;
+            overflow: hidden;
+            height: 800px;
+            max-width: 1400px;
+        }
+
+        .controls {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 10;
+        }
+
+        .controls button {
+            margin: 2px;
+            padding: 5px 10px;
+            background: #f6f8fa;
+            border: 1px solid #d1d5da;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="diagram-container">
+        <div id="mermaid-diagram" class="mermaid">
+            erDiagram
+            "梅 | Plume" zero or many -- zero or one "苹果 | Apple" : "使用 | used"
+            "梅 | Plume" one -- zero or many "香蕉 | Banana" : "使用 | used"
+
+            "梅 | Plume" one -- zero or many "葡萄 | Grapes" : "使用 | used"
+            "西瓜 | Watermelon" zero or many -- one "梅 | Plume" : "达成 | attains"
+            "なんちゃらかんちゃら | OrangeAndLemon" one or many -- zero or many "梅 | Plume" : "使用 | used"
+            "樱桃 | Cherry" zero or many -- one "梅 | Plume" : "达成 | attains"
+
+            "梅 | Plume" one -- zero or many "菠萝 | Pineapple" : "执行 | performed"
+            "梅 | Plume" one -- zero or many "猕猴桃 | Kiwi" : "执行 | performed"
+            "梅 | Plume" one -- zero or many "草莓 | Strawberry" : "执行 | performed"
+
+            "蓝莓 | Blueberry" one -- zero or many "木瓜 | Papaya" : "制造 | Extracts"
+            "蓝莓 | Blueberry" one -- zero or many "橙子 | Orange" : "制造 | Extracts"
+
+            "木瓜 | Papaya" one -- one or many "なんちゃらかんちゃら | OrangeAndLemon" : "选择 | chooses"
+            "橙子 | Orange" one -- one or many "なんちゃらかんちゃら | OrangeAndLemon" : "选择 | chooses"
+
+            "梅 | Plume" {
+            time harvest_date "收获日期"
+            text farmer_name "农民名, max_length=1000"
+            int tree_serial_number FK "树编号, not blank"
+            float ambient_temperature "环境温度, [℃], MinVal=-273.15, MaxVal=100"
+            float ambient_humidity "环境湿度, [*100%], MinVal=0, MaxVal=1"
+            float fruit_weight "水果重量, [g], MinVal=0, MaxVal=1000"
+            text growth_location "生长地点, max_length=1000"
+            text organization_name "组织名, max_length=1000"
+            text farmer_name "农民名, not blank, max_length=1000"
+            text inspector_name "检查员名, max_length=1000"
+            text notes "备注, max_length=5000"
+            }
+
+            "苹果 | Apple" {
+            char tree_serial_number PK "树编号, max_length=255"
+            char tree_type "树类型, not blank, max_length=255"
+            }
+
+            "香蕉 | Banana" {
+            char banana_variety "香蕉品种, not blank, max_length=255"
+            float length "长度, [cm], MinVal=0, MaxVal=30"
+            }
+
+            "なんちゃらかんちゃら | OrangeAndLemon" {
+            char batch_number "批次号, max_length=255"
+            }
+
+            "葡萄 | Grapes" {
+            float sugar_content "糖分含量, [g/100g], MinVal=0, MaxVal=30"
+            float bunch_weight "串重, [g], MinVal=0, MaxVal=1000"
+            float vine_rotation_speed "葡萄藤旋转速度, [rpm], MinVal=0, MaxVal=10"
+            float water_content "水分含量, [g/100g], MinVal=0, MaxVal=100"
+            text growing_conditions_notes "生长条件备注, max_length=5000"
+            float berry_diameter "葡萄粒直径, [mm], MinVal=0, MaxVal=30"
+            }
+
+            "西瓜 | Watermelon" {
+            float weight "重量, [kg], MinVal=0, MaxVal=20"
+            float sugar_content "糖分含量, [*100%], MinVal=0, MaxVal=1"
+            float hardness "硬度, [Shore], MinVal=0, MaxVal=100"
+            text eval_notes "评价备注, max_length=5000"
+            }
+
+            "樱桃 | Cherry" {
+            bool ripe_status "成熟状态"
+            text flavor_description "口感描述, max_length=1000"
+            image cherry_image "樱桃图片"
+            text eval_notes "评价备注, max_length=5000"
+            }
+
+            "菠萝 | Pineapple" {
+            char ripening_method "成熟方法, max_length=255"
+            float ripening_temperature "成熟温度, [℃], MinVal=-273.15, MaxVal=100"
+            float pineapple_weight "菠萝重量, [kg], MinVal=0, MaxVal=5"
+            }
+
+            "猕猴桃 | Kiwi" {
+            float resting_time_between_harvest "收获间隔时间, [d], MinVal=0, MaxVal=365"
+            float resting_time_between_consume "消费间隔时间, [d], MinVal=0, MaxVal=365"
+            }
+
+            "草莓 | Strawberry" {
+            char cooling_method "冷却方法, max_length=255"
+            float pre_cooling_temperature "冷却前温度, [℃], MinVal=-273.15, MaxVal=100"
+            float post_cooling_temperature "冷却后温度, [℃], MinVal=-273.15, MaxVal=100"
+            float cooling_time "冷却时间, [h], MinVal=0, MaxVal=48"
+            }
+            "木瓜 | Papaya" {
+            time ripeness_date "熟成年月日"
+            text origin "産地, max_length=1000"
+            int tree_age FK "木の年齢, not blank"
+            float weight "重さ,[kg], MinVal=0, MaxVal=23"
+            float sweetness "甘さ, [*100%], MinVal=0, MaxVal=1"
+            float size "大きさ, [cm], MinVal=0, MaxVal=100"
+            text color "色, max_length=1000"
+            text flavor "風味, max_length=1000"
+            text quality "品質, max_length=1000"
+            text notes "メモ, max_length=5000"
+            }
+
+            "蓝莓 | Blueberry" {
+            char id PK "ID, max_length=255"
+            char variety "品種名, not blank, max_length=255"
+            }
+
+            "橙子 | Orange" {
+            time ripeness_date "熟成年月日"
+            text origin "産地, max_length=1000"
+            int tree_age FK "木の年齢, not blank"
+            float weight "重さ,[kg], MinVal=0, MaxVal=23"
+            float sweetness "甘さ, [*100%], MinVal=0, MaxVal=1"
+            float size "大きさ, [cm], MinVal=0, MaxVal=100"
+            text color "色, max_length=1000"
+            text flavor "風味, max_length=1000"
+            text quality "品質, max_length=1000"
+            text notes "メモ, max_length=5000"
+            }
+
+        </div>
+    </div>
+
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+
+        // 初始化Mermaid
+        await mermaid.initialize({ startOnLoad: false });
+        await mermaid.run();
+    </script>
+</body>
+
+</html>
